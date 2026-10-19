@@ -7,20 +7,23 @@ Las referencias son **orientativas** (ENS: op.acc.4, op.exp.2, mp.sw.1; NIST: IA
 SI-10) y proceden de `docs/fuentes.md`. Cuando un requisito no se deriva claramente de una
 referencia verificada, se indica como **requisito propio del laboratorio**.
 
-Estados posibles: pendiente, implementado, verificado. Todos parten de **pendiente**.
+Estados posibles: pendiente, implementado, verificado. Todos partieron de **pendiente**; la columna «Estado actual» recoge lo comprobado.
 
 ## Resumen
 
-| ID | Requisito | Origen | Estado |
-|---|---|---|---|
-| SEG-01 | Secretos fuera del código y del historial de Git | Derivado orientativo (NIST IA-5) | Pendiente |
-| SEG-02 | Secretos de servidor ausentes del navegador, respuestas y registros | Derivado orientativo (NIST IA-5) | Pendiente |
-| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente |
-| SEG-04 | Mínimo privilegio para la cuenta de base de datos | Derivado orientativo (ENS op.acc.4, mp.sw.1; NIST AC-6) | Pendiente |
-| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente |
-| SEG-06 | Separación de configuración y datos entre desarrollo, Preview y producción | Derivado orientativo (ENS mp.sw.1) | Pendiente |
-| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente |
-| SEG-08 | Trazabilidad entre cambios, pruebas y despliegues | Propio del laboratorio | Pendiente |
+| ID | Requisito | Origen | Estado inicial | Estado actual |
+|---|---|---|---|---|
+| SEG-01 | Secretos fuera del código y del historial de Git | Derivado orientativo (NIST IA-5) | Pendiente | Verificado en local |
+| SEG-02 | Secretos de servidor ausentes del navegador, respuestas y registros | Derivado orientativo (NIST IA-5) | Pendiente | Verificado en local |
+| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente | Verificado en local; repetir en Preview |
+| SEG-04 | Mínimo privilegio para la cuenta de base de datos | Derivado orientativo (ENS op.acc.4, mp.sw.1; NIST AC-6) | Pendiente | Verificado en BD local de prueba; repetir en el proveedor |
+| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente | Verificado en local |
+| SEG-06 | Separación de configuración y datos entre desarrollo, Preview y producción | Derivado orientativo (ENS mp.sw.1) | Pendiente | Pendiente: requiere configurar variables por entorno en Vercel |
+| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente | Verificado en local |
+| SEG-08 | Trazabilidad entre cambios, pruebas y despliegues | Propio del laboratorio | Pendiente | Implementado; se completa al registrar el despliegue |
+
+Evidencias: `docs/pruebas.md`. «Verificado en local» significa probado contra la aplicación y
+una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 
 ## SEG-01 · Secretos fuera del código y del historial de Git
 
