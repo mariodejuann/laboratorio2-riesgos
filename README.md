@@ -14,3 +14,8 @@ npm run dev     # desarrollo en http://localhost:3000
 npm run build   # comprobar que compila
 npm start       # servir la compilación
 ```
+
+## Documentación
+
+- [Fuentes oficiales](docs/fuentes.md)
+- [Requisitos de seguridad](docs/requisitos-seguridad.md)
