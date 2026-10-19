@@ -19,3 +19,5 @@ npm start       # servir la compilación
 
 - [Fuentes oficiales](docs/fuentes.md)
 - [Requisitos de seguridad](docs/requisitos-seguridad.md)
+- [Caso de trabajo](docs/caso.md)
+- [Reglas de evaluación](docs/evaluacion-riesgos.md)
