@@ -1,0 +1,30 @@
+-- Dos riesgos de ejemplo del caso ficticio (Academia Horizonte). Opcional.
+-- Se pueden crear también desde la aplicación.
+INSERT INTO riesgos (proceso, activo, objetivo, condicion, amenaza, evento, consecuencia, supuesto,
+  probabilidad, justificacion_probabilidad, impacto, justificacion_impacto,
+  medida_descripcion, medida_prioridad, medida_responsable, medida_verificacion, medida_estado)
+VALUES
+('matrícula', 'base de datos', 'conservar y recuperar registros',
+ 'hay una única instancia de base de datos y no se ha probado la restauración de las copias',
+ 'un fallo del almacenamiento',
+ 'la pérdida de acceso a los registros confirmados',
+ 'la imposibilidad de reconstruir parte de las matrículas',
+ 'Se desconoce si las copias disponibles permiten recuperar todos los registros.',
+ 2, 'Media: con una única instancia el fallo es plausible y nada permite considerarlo poco probable, pero no hay indicios concretos de que vaya a ocurrir durante la campaña.',
+ 3, 'Grave: si las copias no se pueden restaurar, la pérdida de registros confirmados no sería recuperable.',
+ 'Realizar una prueba de restauración de la última copia en un entorno separado antes de la campaña y documentar el procedimiento.',
+ 'alta', 'Responsable técnico (ficticio)',
+ 'La restauración termina sin errores, el recuento de matrículas restauradas coincide con el original y el tiempo de recuperación cabe dentro del plazo de la campaña.',
+ 'propuesta'),
+('matrícula', 'base de datos', 'completar solicitudes en plazo',
+ 'la cuenta que utiliza la aplicación tiene permisos administrativos sobre la base de datos',
+ 'un error de la aplicación o una credencial expuesta',
+ 'la modificación o el borrado masivo de registros de matrícula',
+ 'la corrupción de solicitudes y la interrupción de la plataforma mientras se recuperan',
+ 'Se supone que no hay otros controles que limiten operaciones destructivas.',
+ 2, 'Media: los permisos excesivos hacen plausible el daño ante cualquier fallo, aunque no hay indicios concretos de ataque o de credencial expuesta.',
+ 3, 'Grave: sin restauración probada, un borrado masivo podría impedir completar solicitudes en plazo y perder registros confirmados.',
+ 'Sustituir la cuenta de la aplicación por una cuenta con permisos mínimos (SELECT, INSERT, UPDATE, DELETE solo sobre la tabla de riesgos/matrículas) y reservar la cuenta administradora para migraciones.',
+ 'alta', 'Responsable de base de datos (ficticio)',
+ 'Con la cuenta de la aplicación, intentar CREATE TABLE y DROP TABLE devuelve «permission denied»; la aplicación sigue funcionando con normalidad.',
+ 'propuesta');
