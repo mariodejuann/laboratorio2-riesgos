@@ -21,3 +21,4 @@ npm start       # servir la compilación
 - [Requisitos de seguridad](docs/requisitos-seguridad.md)
 - [Caso de trabajo](docs/caso.md)
 - [Reglas de evaluación](docs/evaluacion-riesgos.md)
+- [Formulación guiada del riesgo](docs/formulacion-riesgo.md)

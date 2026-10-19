@@ -1,3 +1,4 @@
+import FormularioRiesgo from "./formulario-riesgo";
 import { CLASIFICACION, IMPACTO, PROBABILIDAD } from "@/lib/escalas";
 
 export default function Home() {
@@ -75,6 +76,8 @@ export default function Home() {
           supuesto o información pendiente, sin convertirse automáticamente en probabilidad alta.
         </p>
       </details>
+
+      <FormularioRiesgo />
     </main>
   );
 }
