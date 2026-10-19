@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { EVALUACION_VACIA, type Evaluacion } from "@/lib/evaluacion";
+import { ESTADOS_MEDIDA, MEDIDA_VACIA, PRIORIDADES, type Medida } from "@/lib/medida";
 import { IMPACTO, PROBABILIDAD } from "@/lib/escalas";
 import { clasificar, puntuacion, esValor } from "@/lib/scoring";
 import {
@@ -25,7 +26,10 @@ export default function FormularioRiesgo() {
   const [ev, setEv] = useState<Evaluacion>(EVALUACION_VACIA);
   const setE = (clave: keyof Evaluacion) => (e: { target: { value: string } }) =>
     setEv((prev) => ({ ...prev, [clave]: e.target.value }));
-  const limpiar = () => { setF(FORMULACION_VACIA); setEv(EVALUACION_VACIA); };
+  const [m, setM] = useState<Medida>(MEDIDA_VACIA);
+  const setMed = (clave: keyof Medida) => (e: { target: { value: string } }) =>
+    setM((prev) => ({ ...prev, [clave]: e.target.value }));
+  const limpiar = () => { setF(FORMULACION_VACIA); setEv(EVALUACION_VACIA); setM(MEDIDA_VACIA); };
 
   const p = Number(ev.probabilidad);
   const i = Number(ev.impacto);
@@ -139,6 +143,39 @@ export default function FormularioRiesgo() {
             <Contador valor={ev.justificacionImpacto} limite={LIMITE_LARGO} />
           </div>
         </fieldset>
+
+        <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+          <legend><h3>F. Medida de protección</h3></legend>
+          <div className="help">Una medida propuesta no reduce el riesgo hasta que se implanta y se verifica. La valoración solo se revisa entonces.</div>
+          <div>
+            <label htmlFor="medidaDescripcion">Medida concreta</label>
+            <textarea id="medidaDescripcion" value={m.descripcion} onChange={setMed("descripcion")} maxLength={LIMITE_LARGO} />
+            <Contador valor={m.descripcion} limite={LIMITE_LARGO} />
+          </div>
+          <div>
+            <label htmlFor="medidaPrioridad">Prioridad</label>
+            <select id="medidaPrioridad" value={m.prioridad} onChange={setMed("prioridad")}>
+              <option value="">Selecciona una prioridad</option>
+              {PRIORIDADES.map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="medidaResponsable">Responsable (ficticio)</label>
+            <input type="text" id="medidaResponsable" value={m.responsable} onChange={setMed("responsable")} maxLength={LIMITE_CORTO} />
+            <Contador valor={m.responsable} limite={LIMITE_CORTO} />
+          </div>
+          <div>
+            <label htmlFor="medidaVerificacion">Cómo se comprobará su eficacia</label>
+            <textarea id="medidaVerificacion" value={m.verificacion} onChange={setMed("verificacion")} maxLength={LIMITE_LARGO} />
+            <Contador valor={m.verificacion} limite={LIMITE_LARGO} />
+          </div>
+          <div>
+            <label htmlFor="medidaEstado">Estado de la medida</label>
+            <select id="medidaEstado" value={m.estado} onChange={setMed("estado")}>
+              {ESTADOS_MEDIDA.map((x) => <option key={x} value={x}>{x}</option>)}
+            </select>
+          </div>
+        </fieldset>
       </form>
 
       <h3>Vista previa del enunciado</h3>
@@ -165,6 +202,9 @@ export default function FormularioRiesgo() {
         ) : (
           <p className="missing">Selecciona probabilidad e impacto para calcular el nivel.</p>
         )}
+        {m.estado !== "verificada" ? (
+          <p className="help">El nivel mostrado es el riesgo actual: la medida (estado «{m.estado}») todavía no lo reduce.</p>
+        ) : null}
         {calculo && faltaJustificacion ? (
           <p className="missing">Falta la justificación de la probabilidad o del impacto: la valoración no está completa.</p>
         ) : null}

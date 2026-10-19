@@ -49,3 +49,10 @@ Las puntuaciones posibles son 1, 2, 3, 4, 6 y 9.
 - La lógica está cubierta por pruebas unitarias para las 9 combinaciones (`tests/scoring.test.ts`).
 - Si faltan datos, la información pendiente se registra en el campo de supuestos y la
   probabilidad no sube automáticamente.
+
+### Medidas de protección
+
+Cada riesgo puede llevar una medida concreta con prioridad (alta, media, baja), responsable
+ficticio, forma de comprobar su eficacia y estado (propuesta, implantada, verificada). La
+aplicación no recalcula el riesgo por el hecho de proponer una medida: hay que implantarla y
+verificarla antes de revisar la valoración.
