@@ -24,7 +24,8 @@ async function intento(nombre, sql, debeFallar) {
   await client.query("ROLLBACK");
   const pasa = debeFallar ? fallo !== null : fallo === null;
   console.log(`${pasa ? "PASA " : "FALLA"}  ${nombre}${fallo ? `  →  ${fallo}` : ""}`);
-  pasa ? ok++ : ko++;
+  if (pasa) ok++;
+  else ko++;
 }
 
 await intento("SELECT sobre riesgos (permitido)", "select count(*) from riesgos", false);

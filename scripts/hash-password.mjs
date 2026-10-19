@@ -13,5 +13,5 @@ rl.question("Contraseña de administración (mín. 12 caracteres): ", (c) => {
   if (c.length < 12) { console.error("Demasiado corta."); process.exit(1); }
   const sal = randomBytes(16);
   const hash = scryptSync(c, sal, 64);
-  console.log(`scrypt$${sal.toString("hex")}$${hash.toString("hex")}`);
+  console.log(`scrypt:${sal.toString("hex")}:${hash.toString("hex")}`);
 });

@@ -1,6 +1,7 @@
 import "server-only";
-import { createHmac, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { verificarContrasena as comprobarContrasena } from "./password";
 
 // Autenticación sencilla de una persona administradora.
 // - La contraseña nunca se guarda: solo su hash scrypt en ADMIN_PASSWORD_HASH.
@@ -16,16 +17,8 @@ function secreto(): Buffer {
   return Buffer.from(s, "utf8");
 }
 
-/** Formato: scrypt$<sal hex>$<hash hex> (generado con scripts/hash-password.mjs). */
 export function verificarContrasena(contrasena: string, almacenado = process.env.ADMIN_PASSWORD_HASH): boolean {
-  if (!almacenado) return false;
-  const partes = almacenado.split("$");
-  if (partes.length !== 3 || partes[0] !== "scrypt") return false;
-  const sal = Buffer.from(partes[1], "hex");
-  const esperado = Buffer.from(partes[2], "hex");
-  if (sal.length < 16 || esperado.length !== 64) return false;
-  const calculado = scryptSync(contrasena, sal, 64);
-  return timingSafeEqual(calculado, esperado);
+  return comprobarContrasena(contrasena, almacenado);
 }
 
 function firmar(datos: string): string {

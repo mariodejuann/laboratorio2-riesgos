@@ -5,7 +5,7 @@ No hay valores reales en este repositorio. La plantilla es `.env.example`.
 | Variable | Finalidad | Dónde se usa | Dónde se guarda | Cómo se sustituye |
 |---|---|---|---|---|
 | `DATABASE_URL` | Conexión a PostgreSQL con la **cuenta de la aplicación** (`app_riesgos`), nunca la administradora | `lib/db.ts` (solo servidor) | Bitwarden; `.env.local`; Vercel (por entorno) | Cambiar la contraseña del rol en el proveedor y actualizar Vercel y `.env.local` |
-| `ADMIN_PASSWORD_HASH` | Hash scrypt de la contraseña de administración de la app | `lib/auth.ts` | Contraseña en Bitwarden; hash en `.env.local` y Vercel | `node scripts/hash-password.mjs` y reemplazar el valor |
+| `ADMIN_PASSWORD_HASH` | Hash scrypt de la contraseña de administración de la app | `lib/auth.ts` | Contraseña en Bitwarden; hash en `.env.local` y Vercel | `node scripts/hash-password.mjs` y reemplazar el valor (formato `scrypt:<sal>:<hash>`) |
 | `SESSION_SECRET` | Firma de la cookie de sesión (≥ 32 caracteres) | `lib/auth.ts` | Bitwarden; `.env.local`; Vercel | `node scripts/session-secret.mjs`; invalida todas las sesiones |
 
 ## Reglas
