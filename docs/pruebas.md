@@ -45,6 +45,7 @@ Total: **22 pasan, 0 fallan**.
 | 6 logins fallidos desde la misma IP → el 6.º devuelve 429 | SEG-03 | Pasa (401×5, 429) |
 | Base de datos inaccesible: respuesta `{"error":"No se pudo completar la operación."}` (500); el registro solo muestra `Error código=ECONNREFUSED`, sin la contraseña de la cadena de conexión | SEG-07 / SEG-02 | Pasa |
 | Búsqueda de `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_PASSWORD_HASH` y contraseñas de prueba en `.next/static` (código del navegador) | SEG-02 | Sin coincidencias |
+| `scripts/probar-permisos.mjs` con `app_riesgos` (local): SELECT permitido; CREATE TABLE, DROP TABLE, ALTER TABLE, TRUNCATE y CREATE ROLE denegados (6/6). Repetir contra Neon y anotar el resultado aquí | SEG-04 | Pasa en local; pendiente en Neon |
 | Con `app_riesgos`: `CREATE TABLE prueba` → `permission denied for schema public`; `DROP TABLE riesgos` → `must be owner of table riesgos` | SEG-04 | Pasa |
 | Inserción con probabilidad 5 directamente en BD → rechazada por restricciones | SEG-05 (defensa en profundidad) | Pasa |
 | `git ls-files` solo contiene `.env.example`; búsqueda en `git log -p` de contraseñas y cadenas de conexión | SEG-01 | Sin coincidencias |

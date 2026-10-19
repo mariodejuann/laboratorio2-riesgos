@@ -57,7 +57,7 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 - **Finalidad:** limitar el daño si la aplicación o su credencial se ven comprometidas.
 - **Referencia concreta:** ENS op.acc.4.2 (privilegios mínimos imprescindibles), ENS mp.sw.1.r1.1 (aplicaciones con los privilegios indispensables) y NIST AC-6.
 - **Implementación prevista:** una cuenta de aplicación con `SELECT, INSERT, UPDATE, DELETE` solo sobre la tabla `riesgos`, sin permisos de esquema (`db/permisos.sql`), distinta de la cuenta administradora que solo se usa para migrar.
-- **Prueba de aceptación:** con la cuenta de aplicación, un `DROP TABLE` o `CREATE TABLE` falla por permisos.
+- **Prueba de aceptación:** con la cuenta de aplicación, `CREATE TABLE`, `DROP TABLE`, `ALTER TABLE`, `TRUNCATE` y `CREATE ROLE` fallan por permisos (`node --env-file=.env.local scripts/probar-permisos.mjs`, que revierte cada intento y no modifica datos).
 - **Evidencia esperada:** mensaje de permiso denegado.
 - **Estado inicial:** pendiente.
 
