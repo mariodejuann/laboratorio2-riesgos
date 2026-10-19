@@ -5,7 +5,7 @@ INSERT INTO riesgos (proceso, activo, objetivo, condicion, amenaza, evento, cons
   medida_descripcion, medida_prioridad, medida_responsable, medida_verificacion, medida_estado)
 VALUES
 ('matrícula', 'base de datos', 'conservar y recuperar registros',
- 'hay una única instancia de base de datos y no se ha probado la restauración de las copias',
+ 'que hay una única instancia de base de datos y no se ha probado la restauración de las copias',
  'un fallo del almacenamiento',
  'la pérdida de acceso a los registros confirmados',
  'la imposibilidad de reconstruir parte de las matrículas',
@@ -17,7 +17,7 @@ VALUES
  'La restauración termina sin errores, el recuento de matrículas restauradas coincide con el original y el tiempo de recuperación cabe dentro del plazo de la campaña.',
  'propuesta'),
 ('matrícula', 'base de datos', 'completar solicitudes en plazo',
- 'la cuenta que utiliza la aplicación tiene permisos administrativos sobre la base de datos',
+ 'que la cuenta que utiliza la aplicación tiene permisos administrativos sobre la base de datos',
  'un error de la aplicación o una credencial expuesta',
  'la modificación o el borrado masivo de registros de matrícula',
  'la corrupción de solicitudes y la interrupción de la plataforma mientras se recuperan',

@@ -1,5 +1,6 @@
-import FormularioRiesgo from "./formulario-riesgo";
+import Aplicacion from "./aplicacion";
 import { CLASIFICACION, IMPACTO, PROBABILIDAD } from "@/lib/escalas";
+
 
 export default function Home() {
   return (
@@ -77,7 +78,7 @@ export default function Home() {
         </p>
       </details>
 
-      <FormularioRiesgo />
+      <Aplicacion />
     </main>
   );
 }
