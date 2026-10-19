@@ -39,3 +39,13 @@ Las puntuaciones posibles son 1, 2, 3, 4, 6 y 9.
   convierte automáticamente la probabilidad en alta.
 - Una medida propuesta no reduce el riesgo hasta que se implanta y se verifica. Solo
   entonces se revisa la valoración.
+
+## Cómo lo aplica la aplicación
+
+- El bloque «Evaluar el riesgo» ofrece probabilidad (1–3) e impacto (1–3) mostrando el
+  descriptor de cada valor, y exige una justificación para cada uno.
+- La puntuación se calcula como probabilidad × impacto (`lib/scoring.ts`) y se muestra con su
+  clasificación en texto (no depende solo del color).
+- La lógica está cubierta por pruebas unitarias para las 9 combinaciones (`tests/scoring.test.ts`).
+- Si faltan datos, la información pendiente se registra en el campo de supuestos y la
+  probabilidad no sube automáticamente.

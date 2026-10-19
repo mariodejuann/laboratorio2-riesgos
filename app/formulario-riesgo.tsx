@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { EVALUACION_VACIA, type Evaluacion } from "@/lib/evaluacion";
+import { IMPACTO, PROBABILIDAD } from "@/lib/escalas";
+import { clasificar, puntuacion, esValor } from "@/lib/scoring";
 import {
   ACTIVOS,
   EJEMPLO,
@@ -19,6 +22,17 @@ function Contador({ valor, limite }: { valor: string; limite: number }) {
 
 export default function FormularioRiesgo() {
   const [f, setF] = useState<Formulacion>(FORMULACION_VACIA);
+  const [ev, setEv] = useState<Evaluacion>(EVALUACION_VACIA);
+  const setE = (clave: keyof Evaluacion) => (e: { target: { value: string } }) =>
+    setEv((prev) => ({ ...prev, [clave]: e.target.value }));
+  const limpiar = () => { setF(FORMULACION_VACIA); setEv(EVALUACION_VACIA); };
+
+  const p = Number(ev.probabilidad);
+  const i = Number(ev.impacto);
+  const calculo = esValor(p) && esValor(i) ? { puntos: puntuacion(p, i), nivel: clasificar(puntuacion(p, i)) } : null;
+  const faltaJustificacion =
+    ev.justificacionProbabilidad.trim() === "" || ev.justificacionImpacto.trim() === "";
+
   const set = (clave: keyof Formulacion) => (e: { target: { value: string } }) =>
     setF((prev) => ({ ...prev, [clave]: e.target.value }));
 
@@ -55,7 +69,7 @@ export default function FormularioRiesgo() {
 
       <div className="row">
         <button type="button" onClick={() => setF(EJEMPLO)}>Cargar ejemplo</button>
-        <button type="button" className="secondary" onClick={() => setF(FORMULACION_VACIA)}>Limpiar formulario</button>
+        <button type="button" className="secondary" onClick={limpiar}>Limpiar formulario</button>
       </div>
 
       <form onSubmit={(e) => e.preventDefault()} noValidate>
@@ -96,6 +110,35 @@ export default function FormularioRiesgo() {
           <legend><h3>D. Qué estamos suponiendo (opcional)</h3></legend>
           {texto("supuesto", "Supuestos o información pendiente", "Separa lo que se sabe de lo que se supone o se desconoce.", LIMITE_LARGO, true)}
         </fieldset>
+
+        <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+          <legend><h3>E. Evaluar el riesgo</h3></legend>
+          <div className="help">Horizonte: la próxima campaña de matrícula. Cada valoración exige una justificación. Si falta información, regístrala como supuesto; no subas la probabilidad por defecto.</div>
+          <div>
+            <label htmlFor="probabilidad">Probabilidad</label>
+            <select id="probabilidad" name="probabilidad" value={ev.probabilidad} onChange={setE("probabilidad")}>
+              <option value="">Selecciona una probabilidad</option>
+              {PROBABILIDAD.map((x) => <option key={x.valor} value={x.valor}>{x.valor} {x.nombre}: {x.descriptor}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="justificacionProbabilidad">Justificación de la probabilidad</label>
+            <textarea id="justificacionProbabilidad" name="justificacionProbabilidad" value={ev.justificacionProbabilidad} onChange={setE("justificacionProbabilidad")} maxLength={LIMITE_LARGO} />
+            <Contador valor={ev.justificacionProbabilidad} limite={LIMITE_LARGO} />
+          </div>
+          <div>
+            <label htmlFor="impacto">Impacto</label>
+            <select id="impacto" name="impacto" value={ev.impacto} onChange={setE("impacto")}>
+              <option value="">Selecciona un impacto</option>
+              {IMPACTO.map((x) => <option key={x.valor} value={x.valor}>{x.valor} {x.nombre}: {x.descriptor}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="justificacionImpacto">Justificación del impacto</label>
+            <textarea id="justificacionImpacto" name="justificacionImpacto" value={ev.justificacionImpacto} onChange={setE("justificacionImpacto")} maxLength={LIMITE_LARGO} />
+            <Contador valor={ev.justificacionImpacto} limite={LIMITE_LARGO} />
+          </div>
+        </fieldset>
       </form>
 
       <h3>Vista previa del enunciado</h3>
@@ -110,6 +153,21 @@ export default function FormularioRiesgo() {
         ) : null}
         {f.supuesto.trim() ? <p><strong>Supuesto o información pendiente:</strong> {f.supuesto}</p> : null}
         <p className="help">Revisa que la frase tenga sentido completo y que los elementos formen un escenario coherente antes de continuar.</p>
+      </div>
+
+      <h3>Nivel de riesgo</h3>
+      <div className="preview" aria-live="polite">
+        {calculo ? (
+          <p>
+            Puntuación: {p} × {i} = <strong>{calculo.puntos}</strong> ·{" "}
+            <span className={`level ${calculo.nivel}`}>Riesgo {calculo.nivel}</span>
+          </p>
+        ) : (
+          <p className="missing">Selecciona probabilidad e impacto para calcular el nivel.</p>
+        )}
+        {calculo && faltaJustificacion ? (
+          <p className="missing">Falta la justificación de la probabilidad o del impacto: la valoración no está completa.</p>
+        ) : null}
       </div>
     </section>
   );
