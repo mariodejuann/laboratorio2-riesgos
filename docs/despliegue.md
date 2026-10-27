@@ -15,6 +15,16 @@ Vercel → Project → Settings → Environment Variables:
 
 Adjuntar captura de esta pantalla **con los valores ocultos** como evidencia (SEG-06).
 
+## Estado de ramas de Neon (SEG-06)
+
+Neon solo tiene una rama: **`production` (Default)**. Las ramas de Preview **no están activadas**.
+
+Consecuencia: los despliegues Preview de Vercel usan la misma base de datos que producción. Los datos de prueba creados en Preview aparecerán en producción y viceversa. Para este laboratorio se acepta esta limitación (plan gratuito de Neon); en un proyecto real habría que activar «Database Branching» en Neon para aislar Preview.
+
+Mientras no se activen ramas de Preview, se recomienda:
+- No crear riesgos con datos reales en el despliegue Preview.
+- Limpiar los datos de prueba antes de la entrega final.
+
 ## Registro de despliegues
 
 | Fecha | Commit de origen | URL Preview | Comprobación |

@@ -74,10 +74,12 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 
 - **Finalidad:** que desarrollo, Preview y producción no compartan credenciales ni datos.
 - **Referencia concreta:** ENS mp.sw.1.1 (desarrollo en sistema separado del de producción, sin datos de producción en desarrollo). Orientativa; en el ENS aplica según categoría.
-- **Implementación prevista:** variables distintas por entorno en Vercel (Development, Preview, Production) y una base o esquema distinto para Preview.
-- **Prueba de aceptación:** revisar que cada entorno apunta a una `DATABASE_URL` distinta y que los datos creados en Preview no aparecen en producción.
-- **Evidencia esperada:** captura de la configuración de Vercel con los valores ocultos.
-- **Estado inicial:** pendiente.
+- **Implementación:** cada entorno de Vercel (Development, Preview, Production) tiene su propio valor de `DATABASE_URL`, `ADMIN_PASSWORD_HASH` y `SESSION_SECRET`. `DATABASE_URL_ADMIN` solo existe en `.env.local` y nunca se configura en Vercel (ver `docs/gestion-secretos.md`).
+  - **Neon y ramas de Preview:** Neon solo tiene una rama (`production`, Default). Las ramas de Preview **no están activadas** (plan gratuito). Consecuencia: Preview y producción comparten la misma base de datos. Los datos de prueba creados en Preview aparecen en producción. Esta limitación se acepta para el laboratorio y queda documentada en `docs/despliegue.md`.
+  - **Pasos para configurar en Vercel (sin usar `--prod`):** acceder a Project → Settings → Environment Variables; para cada variable, marcar solo los entornos donde se necesita (`DATABASE_URL_ADMIN` no se añade); no usar la CLI con `--prod` para evitar sobreescrituras accidentales de producción.
+- **Prueba de aceptación:** revisar que cada entorno apunta a una `DATABASE_URL` distinta (captura de Vercel con valores ocultos) y que los datos creados en Preview no aparecen en producción.
+- **Evidencia:** captura de la pantalla de variables de entorno de Vercel (valores ocultos), adjunta en `docs/despliegue.md`.
+- **Estado actual:** pendiente — requiere que el equipo configure las variables por entorno en Vercel y verifique el estado de las ramas de Preview de Neon.
 
 ## SEG-07 · Errores sin credenciales ni detalles internos sensibles
 
