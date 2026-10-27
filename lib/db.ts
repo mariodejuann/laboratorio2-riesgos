@@ -40,6 +40,7 @@ const COLUMNAS: [keyof RiesgoValido, string][] = [
   ["medidaDescripcion", "medida_descripcion"],
   ["medidaPrioridad", "medida_prioridad"],
   ["medidaResponsable", "medida_responsable"],
+  ["medidaEfecto", "medida_efecto"],
   ["medidaVerificacion", "medida_verificacion"],
   ["medidaEstado", "medida_estado"],
 ];

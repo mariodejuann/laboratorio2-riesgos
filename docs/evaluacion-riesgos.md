@@ -32,6 +32,20 @@ Puntuación = probabilidad × impacto.
 
 Las puntuaciones posibles son 1, 2, 3, 4, 6 y 9.
 
+### Tabla de las nueve combinaciones
+
+| Probabilidad | Impacto | Puntuación | Nivel |
+|:---:|:---:|:---:|:---:|
+| 1 | 1 | 1 | Bajo |
+| 1 | 2 | 2 | Bajo |
+| 1 | 3 | 3 | Medio |
+| 2 | 1 | 2 | Bajo |
+| 2 | 2 | 4 | Medio |
+| 2 | 3 | 6 | Alto |
+| 3 | 1 | 3 | Medio |
+| 3 | 2 | 6 | Alto |
+| 3 | 3 | 9 | Alto |
+
 ## Reglas de justificación
 
 - Cada valoración exige una justificación escrita.

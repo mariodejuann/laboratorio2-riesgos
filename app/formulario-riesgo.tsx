@@ -55,8 +55,8 @@ export default function FormularioRiesgo({ autenticado, editando, onGuardado, on
     editando
       ? {
           descripcion: editando.medidaDescripcion, prioridad: editando.medidaPrioridad,
-          responsable: editando.medidaResponsable, verificacion: editando.medidaVerificacion,
-          estado: editando.medidaEstado,
+          responsable: editando.medidaResponsable, efecto: editando.medidaEfecto,
+          verificacion: editando.medidaVerificacion, estado: editando.medidaEstado,
         }
       : MEDIDA_VACIA,
   );
@@ -94,6 +94,7 @@ export default function FormularioRiesgo({ autenticado, editando, onGuardado, on
       medidaDescripcion: m.descripcion,
       medidaPrioridad: m.prioridad,
       medidaResponsable: m.responsable,
+      medidaEfecto: m.efecto,
       medidaVerificacion: m.verificacion,
       medidaEstado: m.estado,
     };
@@ -259,6 +260,7 @@ export default function FormularioRiesgo({ autenticado, editando, onGuardado, on
             <Contador valor={m.responsable} limite={LIMITE_CORTO} />
             {err("medidaResponsable")}
           </div>
+          {area("medidaEfecto", "Efecto esperado", "Qué mejora concreta se espera conseguir al implantar la medida.", m.efecto, setMed("efecto"))}
           {area("medidaVerificacion", "Cómo se comprobará su eficacia", "Prueba observable que demuestre que protege el objetivo.", m.verificacion, setMed("verificacion"))}
           {lista("medidaEstado", "Estado de la medida", "Propuesta, implantada o verificada.", m.estado, setMed("estado"), ESTADOS_MEDIDA.map((x) => ({ v: x, t: x })))}
         </fieldset>

@@ -198,6 +198,7 @@ export default function Aplicacion() {
                   <tr><th>Medida</th><td>{r.medidaDescripcion}</td></tr>
                   <tr><th>Prioridad / estado</th><td>{r.medidaPrioridad} / {r.medidaEstado}</td></tr>
                   <tr><th>Responsable</th><td>{r.medidaResponsable || "—"}</td></tr>
+                  <tr><th>Efecto esperado</th><td>{r.medidaEfecto}</td></tr>
                   <tr><th>Comprobación de eficacia</th><td>{r.medidaVerificacion}</td></tr>
                   <tr><th>Actualizado</th><td>{new Date(r.actualizadoEn).toLocaleString("es-ES")}</td></tr>
                 </tbody>

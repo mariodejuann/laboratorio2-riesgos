@@ -20,6 +20,7 @@ export type RiesgoValido = {
   medidaDescripcion: string;
   medidaPrioridad: string;
   medidaResponsable: string;
+  medidaEfecto: string;
   medidaVerificacion: string;
   medidaEstado: string;
 };
@@ -52,6 +53,7 @@ const REGLAS: Record<keyof RiesgoValido, Regla> = {
   medidaDescripcion: { tipo: "texto", max: LIMITE_LARGO, obligatorio: true },
   medidaPrioridad: { tipo: "lista", valores: PRIORIDADES },
   medidaResponsable: { tipo: "texto", max: LIMITE_CORTO, obligatorio: false },
+  medidaEfecto: { tipo: "texto", max: LIMITE_LARGO, obligatorio: true },
   medidaVerificacion: { tipo: "texto", max: LIMITE_LARGO, obligatorio: true },
   medidaEstado: { tipo: "lista", valores: ESTADOS_MEDIDA },
 };
