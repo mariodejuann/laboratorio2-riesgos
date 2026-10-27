@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { verificarContrasena as comprobarContrasena } from "./password";
 
-// Autenticación sencilla de una persona administradora.
+// Autenticación sencilla para el perfil «gestor» (un único usuario).
 // - La contraseña nunca se guarda: solo su hash scrypt en ADMIN_PASSWORD_HASH.
 // - La sesión es una cookie httpOnly firmada con HMAC-SHA256 (SESSION_SECRET).
 // Ninguno de estos valores se envía al navegador ni se registra (SEG-02).

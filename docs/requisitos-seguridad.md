@@ -47,10 +47,10 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 
 - **Finalidad:** que solo una sesión autorizada pueda crear, editar o borrar riesgos.
 - **Referencia concreta:** ENS op.acc.4.1 (todo acceso prohibido salvo autorización expresa) y NIST AC-6 (solo accesos autorizados necesarios).
-- **Implementación prevista:** cada operación de escritura comprueba la cookie de sesión firmada en el servidor, con independencia de lo que muestre la interfaz.
+- **Implementación:** perfil único «gestor». Se eligió `node:crypto` (integrado en Node.js) en lugar de una biblioteca externa por las siguientes razones: (1) no introduce dependencias de terceros ni riesgo de cadena de suministro; (2) `scryptSync` para el hash de contraseña y HMAC-SHA256 para la firma de sesión son primitivos auditados y bien documentados; (3) para un único usuario con contraseña almacenada como hash en variable de entorno, la implementación resultante es más pequeña y legible que cualquier biblioteca de sesiones. La cookie tiene los atributos `HttpOnly`, `Secure` (en producción) y `SameSite=strict`. Cada operación de escritura comprueba la cookie en el servidor, independientemente de lo que muestre la interfaz.
 - **Prueba de aceptación:** `POST`, `PUT` y `DELETE` sin sesión devuelven 401 y no cambian datos; con sesión válida funcionan.
-- **Evidencia esperada:** resultado de las pruebas de escritura no autorizada.
-- **Estado inicial:** pendiente.
+- **Evidencia esperada:** resultado de las pruebas de escritura no autorizada (`docs/pruebas.md`).
+- **Estado actual:** Verificado en local; repetir en Preview.
 
 ## SEG-04 · Mínimo privilegio para la cuenta de base de datos
 

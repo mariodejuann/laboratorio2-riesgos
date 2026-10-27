@@ -116,7 +116,7 @@ export default function Aplicacion() {
           <p className="help">Sesión iniciada. Puedes guardar, editar y borrar riesgos.</p>
         ) : (
           <form onSubmit={entrar}>
-            <label htmlFor="contrasena">Contraseña de administración</label>
+            <label htmlFor="contrasena">Contraseña del gestor</label>
             <div className="help" id="contrasena-ayuda">Necesaria para ver el detalle de los registros y para guardar cambios.</div>
             <input type="password" id="contrasena" autoComplete="current-password" value={contrasena} onChange={(e) => setContrasena(e.target.value)} maxLength={200} aria-describedby="contrasena-ayuda" />
             <div className="row"><button type="submit" disabled={!contrasena}>Iniciar sesión</button></div>
