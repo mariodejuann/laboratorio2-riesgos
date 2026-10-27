@@ -1,5 +1,10 @@
--- Esquema de la aplicación. Ejecutar con la cuenta ADMINISTRADORA (no con la de la aplicación).
+-- Migración 001: crea la tabla riesgos.
+-- Ejecutar con la cuenta ADMINISTRADORA (DATABASE_URL_ADMIN), nunca con la de la aplicación.
 -- Requiere PostgreSQL 13 o superior (gen_random_uuid incluido).
+--
+-- Cómo aplicar:
+--   psql "$DATABASE_URL_ADMIN" -f db/001_crear_riesgos.sql
+-- En Neon también se puede pegar en el editor SQL de la consola (Branch → SQL Editor).
 
 CREATE TABLE IF NOT EXISTS riesgos (
   id                          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -16,6 +21,11 @@ CREATE TABLE IF NOT EXISTS riesgos (
   impacto                     smallint     NOT NULL CHECK (impacto BETWEEN 1 AND 3),
   justificacion_impacto       varchar(400) NOT NULL,
   puntuacion                  smallint GENERATED ALWAYS AS (probabilidad * impacto) STORED,
+  nivel                       varchar(5) GENERATED ALWAYS AS (
+                                CASE WHEN probabilidad * impacto >= 6 THEN 'alto'
+                                     WHEN probabilidad * impacto >= 3 THEN 'medio'
+                                     ELSE 'bajo' END
+                              ) STORED,
   medida_descripcion          varchar(400) NOT NULL,
   medida_prioridad            varchar(10)  NOT NULL CHECK (medida_prioridad IN ('alta', 'media', 'baja')),
   medida_responsable          varchar(120) NOT NULL DEFAULT '',

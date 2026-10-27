@@ -162,10 +162,9 @@ export default function FormularioRiesgo({ autenticado, editando, onGuardado, on
   return (
     <section className="card" aria-labelledby="identificar">
       <h2 id="identificar">{editando ? "Editar riesgo" : "Identificar un riesgo"}</h2>
-      {!editando ? (
-        <p className="temp" role="status">
-          Borrador temporal. No se guarda al recargar.
-          {autenticado ? " Pulsa «Guardar riesgo» para registrarlo." : " Inicia sesión para poder guardarlo."}
+      {!editando && !autenticado ? (
+        <p className="help" role="status">
+          Inicia sesión para poder guardar el riesgo. Los riesgos guardados aparecen en el listado inferior.
         </p>
       ) : null}
 
