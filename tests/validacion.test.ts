@@ -17,6 +17,7 @@ const valido = {
   medidaDescripcion: "Probar la restauración de la copia en un entorno separado.",
   medidaPrioridad: "alta",
   medidaResponsable: "",
+  medidaEfecto: "Reducir la probabilidad de pérdida irrecuperable de registros.",
   medidaVerificacion: "Recuento de registros restaurados igual al original.",
   medidaEstado: "propuesta",
 };

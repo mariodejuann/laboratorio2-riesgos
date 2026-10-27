@@ -65,10 +65,10 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 
 - **Finalidad:** aceptar únicamente datos con el tipo, longitud y valores permitidos.
 - **Referencia concreta:** NIST SI-10 (validar sintaxis y semántica: longitud, rango numérico, valores aceptables).
-- **Implementación prevista:** validación en el servidor de cada campo y recálculo de la puntuación; consultas parametrizadas. La validación del navegador es solo una ayuda.
-- **Prueba de aceptación:** peticiones directas a la API con probabilidad 5, texto de longitud excesiva y valores fuera de lista son rechazadas con 400.
-- **Evidencia esperada:** resultados de las pruebas automáticas y manuales.
-- **Estado inicial:** pendiente.
+- **Implementación:** `lib/validacion.ts` define una tabla de reglas (`REGLAS`) para cada campo del modelo. Cada regla es de tipo `texto` (con longitud máxima y obligatoriedad), `lista` (valores exactos permitidos) o `escala` (entero 1–3). La función `validarRiesgo` rechaza: campos de tipo incorrecto, textos vacíos cuando son obligatorios, textos que superan la longitud máxima (`LIMITE_CORTO` = 120, `LIMITE_LARGO` = 400), valores fuera de lista cerrada (activo, objetivo, prioridad, estado de medida), valores de escala fuera de 1–3, caracteres de control (U+0000–U+001F salvo LF y TAB), y campos extra desconocidos (se ignoran, no se guardan). Las consultas SQL son siempre parametrizadas (`pg` con `$1`, `$2`…). La validación del navegador es solo una ayuda visual; la del servidor es la que cuenta.
+- **Prueba:** `tests/validacion.test.ts` (9 casos: riesgo válido completo, probabilidad fuera de escala, texto demasiado largo, valores fuera de lista, campos obligatorios vacíos, caracteres de control, cuerpos no-objeto, campos desconocidos ignorados, HTML tratado como texto plano). Resultado: 9/9 pasados.
+- **Evidencia:** ejecutar `npm test` — salida `Tests 26 passed (26)`.
+- **Estado actual:** implementado y verificado con pruebas automáticas.
 
 ## SEG-06 · Separación de configuración y datos entre entornos
 
@@ -83,10 +83,10 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 
 - **Finalidad:** no dar pistas a un atacante ni filtrar secretos.
 - **Referencia concreta:** requisito propio del laboratorio, sin referencia verificada en la selección.
-- **Implementación prevista:** respuestas públicas con mensajes genéricos; el detalle va solo al registro del servidor, sin valores secretos.
-- **Prueba de aceptación:** provocar un fallo de base de datos y comprobar que la respuesta no contiene cadena de conexión, SQL ni traza.
-- **Evidencia esperada:** respuesta de error de la API.
-- **Estado inicial:** pendiente.
+- **Implementación:** `lib/api.ts` centraliza las respuestas de error en dos funciones: `error()` devuelve un JSON con un mensaje genérico (`{ error: "…" }`) y sin traza; `fallo()` captura excepciones inesperadas, registra en el servidor solo el nombre del constructor del error y el código PostgreSQL (nunca la cadena de conexión ni el SQL), y devuelve siempre 500 o 503 con mensaje genérico. Los textos recibidos del usuario se tratan como texto plano: React los escapa automáticamente al renderizar (los tests en `validacion.test.ts` verifican que `<b>matrícula</b>` se guarda tal cual sin ser interpretado). La validación del navegador es solo una ayuda; la protección real es la del servidor.
+- **Prueba:** `tests/validacion.test.ts` — caso «trata el HTML como texto plano». Prueba manual: petición a `/api/riesgos` sin sesión → respuesta `{"error":"Autenticación requerida."}` sin traza ni SQL.
+- **Evidencia:** salida de `npm test` y captura de la respuesta de la API (`docs/pruebas.md`).
+- **Estado actual:** implementado y verificado en local.
 
 ## SEG-08 · Trazabilidad entre cambios, pruebas y despliegues
 
