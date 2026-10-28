@@ -103,16 +103,21 @@ correcto; sin errores en la consola.
 
 ## Entorno Preview (Vercel)
 
-Pendiente de ejecutar por la persona responsable tras el despliegue:
+Ejecutado el 28/10/2026 con:
 
 ```bash
-bash scripts/pruebas-api.sh https://<url-preview>.vercel.app
+bash scripts/pruebas-api.sh https://laboratorio2-riesgos-1zt6r5jta-personal-projects-6ffb.vercel.app
 ```
 
 | Fecha | Commit | URL | Resultado |
 |---|---|---|---|
-| _(rellenar)_ | _(rellenar)_ | _(rellenar)_ | _(n pasan, n fallan)_ |
+| 28/10/2026 | `fad334d` | https://laboratorio2-riesgos-1zt6r5jta-personal-projects-6ffb.vercel.app | **23 pasan, 0 fallan** |
 
-> Si la Preview tiene activada la **protección de despliegue de Vercel** (Vercel
-> Authentication), las peticiones de `curl` reciben 401 de Vercel antes de llegar a la app.
-> En ese caso, ejecuta las pruebas en local o desactiva temporalmente esa protección.
+Cubre SEG-03 (escritura sin sesión rechazada y BD sin cambios), SEG-05 (validación en servidor) y SEG-07 (respuestas de error sin detalles internos), ahora sobre el despliegue Preview y no solo en local.
+
+Ejecuciones anteriores **no válidas** (no se usan como evidencia):
+
+- Respuestas 308: la URL se pasó con barra final (`…vercel.app/`), lo que generaba rutas con doble barra y redirecciones.
+- Respuestas 401 de Vercel: la **protección de despliegue de Vercel** (Vercel Authentication) devolvía `Protected by Vercel Authentication` antes de llegar a la aplicación, de modo que los 401 no procedían de la autorización de la app y algunos «PASA» eran falsos positivos.
+
+Para la ejecución válida se desactivó la protección de despliegue de Vercel en este proyecto (solo contiene datos ficticios) y se pasó la URL sin barra final.

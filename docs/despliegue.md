@@ -29,7 +29,9 @@ Mientras no se activen ramas de Preview, se recomienda:
 
 | Fecha | Commit (`entrega-l2`) | URL Preview | Prueba 3 persistencia | Prueba 4 escritura no autorizada |
 |---|---|---|---|---|
-| _(rellenar)_ | _(git rev-parse --short HEAD)_ | _(https://…vercel.app)_ | _(pasa / falla)_ | _(pasa / falla)_ |
+| 28/10/2026 | `fad334d` | https://laboratorio2-riesgos-1zt6r5jta-personal-projects-6ffb.vercel.app | pasa | pasa |
+
+Resultado global de `scripts/pruebas-api.sh` en esta Preview: **23 pasan, 0 fallan**. La protección de despliegue de Vercel (Vercel Authentication) se desactivó para poder ejecutar las pruebas con `curl`; el despliegue contiene solo datos ficticios. Las ejecuciones previas con 308 (URL con barra final) y 401 (protección de Vercel) no son válidas y no se usan como evidencia.
 
 ### Pasos para el despliegue Preview y la entrega
 

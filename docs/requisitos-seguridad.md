@@ -15,15 +15,16 @@ Estados posibles: pendiente, implementado, verificado. Todos partieron de **pend
 |---|---|---|---|---|
 | SEG-01 | Secretos fuera del código y del historial de Git | Derivado orientativo (NIST IA-5) | Pendiente | **Cumplido** — `git ls-files` solo contiene `.env.example`; `git log -p` sin valores reales |
 | SEG-02 | Secretos de servidor ausentes del navegador, respuestas y registros | Derivado orientativo (NIST IA-5) | Pendiente | **Cumplido** — ninguna variable tiene prefijo `NEXT_PUBLIC_`; búsqueda en `.next/static` sin coincidencias |
-| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente | **Cumplido** — POST/PUT/DELETE sin sesión devuelven 401; cookie HttpOnly+Secure+SameSite; límite de intentos |
+| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente | **Cumplido, verificado en Preview** (28/10/2026, commit `fad334d`, 23/23) — POST/PUT/DELETE sin sesión devuelven 401 y la BD no cambia; cookie HttpOnly+Secure+SameSite; límite de intentos |
 | SEG-04 | Mínimo privilegio para la cuenta de base de datos | Derivado orientativo (ENS op.acc.4, mp.sw.1; NIST AC-6) | Pendiente | **Cumplido** — `app_riesgos` solo tiene SELECT/INSERT/UPDATE/DELETE; CREATE TABLE y DROP TABLE deniegan |
-| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente | **Cumplido** — 26/26 pruebas unitarias pasan; validación por tipo, longitud, lista y escala en `lib/validacion.ts` |
+| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente | **Cumplido, verificado en Preview** (28/10/2026, commit `fad334d`, 23/23) — 26/26 pruebas unitarias pasan; validación por tipo, longitud, lista y escala en `lib/validacion.ts` |
 | SEG-06 | Separación de configuración y datos entre desarrollo, Preview y producción | Derivado orientativo (ENS mp.sw.1) | Pendiente | **Parcial** — variables distintas por entorno en Vercel; Neon sin ramas de Preview (limitación del plan gratuito, documentada en `docs/despliegue.md`) |
-| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente | **Cumplido** — `lib/api.ts` devuelve mensajes genéricos; registros sin secretos; HTML escapado por React |
+| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente | **Cumplido, verificado en Preview** (28/10/2026, commit `fad334d`, 23/23) — `lib/api.ts` devuelve mensajes genéricos; registros sin secretos; HTML escapado por React |
 | SEG-08 | Trazabilidad entre cambios, pruebas y despliegues | Propio del laboratorio | Pendiente | **Parcial** — commits descriptivos y `docs/pruebas.md` completados; `docs/despliegue.md` pendiente de URL Preview |
 
 Evidencias: `docs/pruebas.md`. «Verificado en local» significa probado contra la aplicación y
-una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
+una base de datos PostgreSQL local. «Verificado en Preview» significa probado con
+`scripts/pruebas-api.sh` contra el despliegue Preview de Vercel (SEG-03, SEG-05 y SEG-07).
 
 ## SEG-01 · Secretos fuera del código y del historial de Git
 
@@ -50,7 +51,7 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 - **Implementación:** perfil único «gestor». Se eligió `node:crypto` (integrado en Node.js) en lugar de una biblioteca externa por las siguientes razones: (1) no introduce dependencias de terceros ni riesgo de cadena de suministro; (2) `scryptSync` para el hash de contraseña y HMAC-SHA256 para la firma de sesión son primitivos auditados y bien documentados; (3) para un único usuario con contraseña almacenada como hash en variable de entorno, la implementación resultante es más pequeña y legible que cualquier biblioteca de sesiones. La cookie tiene los atributos `HttpOnly`, `Secure` (en producción) y `SameSite=strict`. Cada operación de escritura comprueba la cookie en el servidor, independientemente de lo que muestre la interfaz.
 - **Prueba de aceptación:** `POST`, `PUT` y `DELETE` sin sesión devuelven 401 y no cambian datos; con sesión válida funcionan.
 - **Evidencia esperada:** resultado de las pruebas de escritura no autorizada (`docs/pruebas.md`).
-- **Estado actual:** Verificado en local; repetir en Preview.
+- **Estado actual:** verificado en local y en Preview (28/10/2026, commit `fad334d`, `scripts/pruebas-api.sh`: 23 pasan, 0 fallan; ver `docs/pruebas.md`).
 
 ## SEG-04 · Mínimo privilegio para la cuenta de base de datos
 
@@ -68,7 +69,7 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 - **Implementación:** `lib/validacion.ts` define una tabla de reglas (`REGLAS`) para cada campo del modelo. Cada regla es de tipo `texto` (con longitud máxima y obligatoriedad), `lista` (valores exactos permitidos) o `escala` (entero 1–3). La función `validarRiesgo` rechaza: campos de tipo incorrecto, textos vacíos cuando son obligatorios, textos que superan la longitud máxima (`LIMITE_CORTO` = 120, `LIMITE_LARGO` = 400), valores fuera de lista cerrada (activo, objetivo, prioridad, estado de medida), valores de escala fuera de 1–3, caracteres de control (U+0000–U+001F salvo LF y TAB), y campos extra desconocidos (se ignoran, no se guardan). Las consultas SQL son siempre parametrizadas (`pg` con `$1`, `$2`…). La validación del navegador es solo una ayuda visual; la del servidor es la que cuenta.
 - **Prueba:** `tests/validacion.test.ts` (9 casos: riesgo válido completo, probabilidad fuera de escala, texto demasiado largo, valores fuera de lista, campos obligatorios vacíos, caracteres de control, cuerpos no-objeto, campos desconocidos ignorados, HTML tratado como texto plano). Resultado: 9/9 pasados.
 - **Evidencia:** ejecutar `npm test` — salida `Tests 26 passed (26)`.
-- **Estado actual:** implementado y verificado con pruebas automáticas.
+- **Estado actual:** implementado y verificado con pruebas automáticas y en Preview (28/10/2026, commit `fad334d`, 23 pasan, 0 fallan).
 
 ## SEG-06 · Separación de configuración y datos entre entornos
 
@@ -88,7 +89,7 @@ una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.
 - **Implementación:** `lib/api.ts` centraliza las respuestas de error en dos funciones: `error()` devuelve un JSON con un mensaje genérico (`{ error: "…" }`) y sin traza; `fallo()` captura excepciones inesperadas, registra en el servidor solo el nombre del constructor del error y el código PostgreSQL (nunca la cadena de conexión ni el SQL), y devuelve siempre 500 o 503 con mensaje genérico. Los textos recibidos del usuario se tratan como texto plano: React los escapa automáticamente al renderizar (los tests en `validacion.test.ts` verifican que `<b>matrícula</b>` se guarda tal cual sin ser interpretado). La validación del navegador es solo una ayuda; la protección real es la del servidor.
 - **Prueba:** `tests/validacion.test.ts` — caso «trata el HTML como texto plano». Prueba manual: petición a `/api/riesgos` sin sesión → respuesta `{"error":"Autenticación requerida."}` sin traza ni SQL.
 - **Evidencia:** salida de `npm test` y captura de la respuesta de la API (`docs/pruebas.md`).
-- **Estado actual:** implementado y verificado en local.
+- **Estado actual:** implementado y verificado en local y en Preview (28/10/2026, commit `fad334d`: la respuesta de error no incluye SQL ni trazas).
 
 ## SEG-08 · Trazabilidad entre cambios, pruebas y despliegues
 
