@@ -2,18 +2,62 @@
 
 Todas las pruebas se hicieron con **datos ficticios**.
 
-## Entorno local (19/10/2026)
+## Entorno local (28/10/2026) — commit `5456e86`
 
-- Base de datos: PostgreSQL 16 local de prueba, con la cuenta `app_riesgos` creada con
-  `db/permisos.sql` (credenciales de prueba desechables, no versionadas).
-- Aplicación: `npm run build` + `next start` (Next.js 16.4.2, Node 22).
+- Base de datos: PostgreSQL (Neon), rama `production`, cuenta `app_riesgos`.
+- Aplicación: `npm run dev` (Next.js, Node 22).
 
-### Pruebas unitarias (`npm test`)
+### Prueba 1 · Clasificación — `npm test` (`tests/scoring.test.ts`)
 
-| Suite | Resultado |
-|---|---|
-| `tests/scoring.test.ts`: 9 combinaciones de probabilidad × impacto, puntuaciones imposibles, valores de escala | 12/12 pasan |
-| `tests/validacion.test.ts`: escala, longitudes, listas cerradas, obligatorios, tipos, caracteres de control, campos desconocidos, UUID | 10/10 pasan |
+Las 9 combinaciones de probabilidad × impacto, puntuaciones imposibles y valores de escala.
+
+| Suite | Fecha | Commit | Resultado |
+|---|---|---|---|
+| `tests/scoring.test.ts` (12 casos) | 28/10/2026 | `5456e86` | 12/12 pasan |
+| `tests/validacion.test.ts` (9 casos) | 28/10/2026 | `5456e86` | 9/9 pasan |
+| `tests/password.test.ts` (5 casos) | 28/10/2026 | `5456e86` | 5/5 pasan |
+| **Total** | 28/10/2026 | `5456e86` | **26/26 pasan** |
+
+Ejecutar: `npm test`
+
+### Prueba 2 · Validación — `tests/validacion.test.ts`
+
+Cubre: escala fuera de rango, texto demasiado largo, valores fuera de lista cerrada, campos obligatorios vacíos, tipos incorrectos, caracteres de control, cuerpos no-objeto, campos desconocidos ignorados, HTML tratado como texto plano. Incluido en el total anterior (9/9).
+
+### Prueba 3 · Persistencia
+
+Cubierta por `scripts/pruebas-api.sh`: «Lectura tras crear (persistencia)» y «El riesgo creado se recupera» crean un riesgo, recargan la lista y verifican que el ID sigue presente. También cubierta en la prueba de interfaz (ver más abajo).
+
+### Prueba 4 · Escritura no autorizada
+
+Cubierta por `scripts/pruebas-api.sh`: se captura `/api/resumen` antes de los intentos sin sesión, se realizan POST/PUT/DELETE (todos deben devolver 401), y se vuelve a capturar `/api/resumen` para verificar que el conteo no cambió. Esto confirma que los intentos fueron rechazados **y** que la base de datos no fue modificada.
+
+### Prueba 5 · Secretos
+
+**Búsqueda en el historial de Git** (28/10/2026, commit `5456e86`):
+
+```bash
+# Comprobar que no hay archivos .env con valores en el repositorio
+git ls-files | grep -iE "\.env"
+# Solo debe aparecer .env.example
+
+# Buscar valores reales de variables de entorno en el historial
+git log -p --all | grep -iE "^[+](DATABASE_URL|SESSION_SECRET|ADMIN_PASSWORD_HASH)\s*=\s*.+" | grep -v "=$"
+# Sin salida = sin valores reales encontrados
+```
+
+Resultado: solo `.env.example` está versionado (sin valores). La búsqueda en el historial no encontró ninguna línea con valor real en `DATABASE_URL`, `SESSION_SECRET` ni `ADMIN_PASSWORD_HASH`.
+
+**Búsqueda en el código del cliente** (build de Next.js):
+
+```bash
+grep -r "DATABASE_URL\|SESSION_SECRET\|ADMIN_PASSWORD_HASH\|scrypt:" .next/static/
+# Sin coincidencias
+```
+
+Resultado documentado en la sección de pruebas adicionales (pendiente de repetir tras el build de Preview).
+
+> gitleaks no está disponible en el entorno de desarrollo. La búsqueda manual con `git log -p` es equivalente para este conjunto de secretos conocidos.
 
 ### Pruebas de aceptación de la API (`bash scripts/pruebas-api.sh http://localhost:3100`)
 
@@ -36,7 +80,7 @@ Todas las pruebas se hicieron con **datos ficticios**.
 | Borrar | — | 204 | Pasa |
 | Respuesta sin detalles internos | SEG-07 | Sin SQL/trazas | Pasa |
 
-Total: **22 pasan, 0 fallan**.
+Total: **23 pasan, 0 fallan** (se añadió «BD sin cambios tras escrituras no autorizadas»; pendiente de re-ejecutar con la versión actual que incluye `medidaEfecto`).
 
 ### Pruebas adicionales
 

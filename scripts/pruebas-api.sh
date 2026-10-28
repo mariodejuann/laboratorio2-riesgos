@@ -17,15 +17,25 @@ peticion() { # metodo ruta [cuerpo] [opciones extra...]
   curl -s -o "$TMP/out" -w "%{http_code}" -X "$m" "$BASE$r" -H "Content-Type: application/json" ${b:+--data "$b"} "$@"
 }
 
-VALIDO='{"proceso":"matrícula","activo":"plataforma web","objetivo":"completar solicitudes en plazo","condicion":"prueba automática","amenaza":"prueba","evento":"prueba","consecuencia":"prueba","supuesto":"","probabilidad":1,"justificacionProbabilidad":"prueba","impacto":2,"justificacionImpacto":"prueba","medidaDescripcion":"prueba","medidaPrioridad":"baja","medidaResponsable":"","medidaVerificacion":"prueba","medidaEstado":"propuesta"}'
+VALIDO='{"proceso":"matrícula","activo":"plataforma web","objetivo":"completar solicitudes en plazo","condicion":"prueba automática","amenaza":"prueba","evento":"prueba","consecuencia":"prueba","supuesto":"","probabilidad":1,"justificacionProbabilidad":"prueba","impacto":2,"justificacionImpacto":"prueba","medidaDescripcion":"prueba","medidaPrioridad":"baja","medidaResponsable":"","medidaEfecto":"prueba de efecto esperado","medidaVerificacion":"prueba","medidaEstado":"propuesta"}'
 ID_FALSO="3f1c7a2e-9b4d-4c1e-8a2f-1b2c3d4e5f60"
 
 echo "== Escritura y lectura no autorizadas (SEG-03) =="
 comprobar "GET /api/riesgos sin sesión" 401 "$(peticion GET /api/riesgos)"
+
+# Prueba 4: escritura no autorizada no cambia la BD (comparar /api/resumen antes y después)
+peticion GET /api/resumen >/dev/null; RESUMEN_ANTES=$(cat "$TMP/out")
 comprobar "POST sin sesión" 401 "$(peticion POST /api/riesgos "$VALIDO")"
 comprobar "PUT sin sesión" 401 "$(peticion PUT /api/riesgos/$ID_FALSO "$VALIDO")"
 comprobar "DELETE sin sesión" 401 "$(peticion DELETE /api/riesgos/$ID_FALSO)"
 comprobar "POST con cookie falsificada" 401 "$(peticion POST /api/riesgos "$VALIDO" -H "Cookie: sesion=admin.9999999999999.firmafalsa")"
+peticion GET /api/resumen >/dev/null; RESUMEN_DESPUES=$(cat "$TMP/out")
+if [ "$RESUMEN_ANTES" = "$RESUMEN_DESPUES" ]; then
+  comprobar "BD sin cambios tras escrituras no autorizadas" si si
+else
+  comprobar "BD sin cambios tras escrituras no autorizadas" si no
+fi
+
 comprobar "Login con contraseña incorrecta" 401 "$(peticion POST /api/login '{"contrasena":"incorrecta"}')"
 
 echo "== Inicio de sesión =="
