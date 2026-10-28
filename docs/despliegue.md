@@ -27,6 +27,25 @@ Mientras no se activen ramas de Preview, se recomienda:
 
 ## Registro de despliegues
 
-| Fecha | Commit de origen | URL Preview | Comprobación |
-|---|---|---|---|
-| _(rellenar)_ | _(git rev-parse --short HEAD)_ | _(https://…vercel.app)_ | _(textos visibles, login, persistencia, `scripts/pruebas-api.sh`)_ |
+| Fecha | Commit (`entrega-l2`) | URL Preview | Prueba 3 persistencia | Prueba 4 escritura no autorizada |
+|---|---|---|---|---|
+| _(rellenar)_ | _(git rev-parse --short HEAD)_ | _(https://…vercel.app)_ | _(pasa / falla)_ | _(pasa / falla)_ |
+
+### Pasos para el despliegue Preview y la entrega
+
+```bash
+# 1. Hacer el commit final y crear la etiqueta
+git tag entrega-l2
+git push origin entrega-l2
+
+# 2. Desplegar en Preview (nunca --prod)
+npx vercel
+
+# 3. Anotar la URL que imprime Vercel y ejecutar las pruebas 3 y 4
+bash scripts/pruebas-api.sh https://<url>.vercel.app
+
+# 4. Obtener el identificador del commit de la etiqueta para la PDU
+git rev-list -n 1 entrega-l2
+```
+
+Registrar en la tabla: fecha, hash corto del commit, URL Preview y resultado de las pruebas 3 y 4.

@@ -13,14 +13,14 @@ Estados posibles: pendiente, implementado, verificado. Todos partieron de **pend
 
 | ID | Requisito | Origen | Estado inicial | Estado actual |
 |---|---|---|---|---|
-| SEG-01 | Secretos fuera del código y del historial de Git | Derivado orientativo (NIST IA-5) | Pendiente | Verificado en local |
-| SEG-02 | Secretos de servidor ausentes del navegador, respuestas y registros | Derivado orientativo (NIST IA-5) | Pendiente | Verificado en local |
-| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente | Verificado en local; repetir en Preview |
-| SEG-04 | Mínimo privilegio para la cuenta de base de datos | Derivado orientativo (ENS op.acc.4, mp.sw.1; NIST AC-6) | Pendiente | Verificado en BD local de prueba; repetir en el proveedor |
-| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente | Verificado en local |
-| SEG-06 | Separación de configuración y datos entre desarrollo, Preview y producción | Derivado orientativo (ENS mp.sw.1) | Pendiente | Pendiente: requiere configurar variables por entorno en Vercel |
-| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente | Verificado en local |
-| SEG-08 | Trazabilidad entre cambios, pruebas y despliegues | Propio del laboratorio | Pendiente | Implementado; se completa al registrar el despliegue |
+| SEG-01 | Secretos fuera del código y del historial de Git | Derivado orientativo (NIST IA-5) | Pendiente | **Cumplido** — `git ls-files` solo contiene `.env.example`; `git log -p` sin valores reales |
+| SEG-02 | Secretos de servidor ausentes del navegador, respuestas y registros | Derivado orientativo (NIST IA-5) | Pendiente | **Cumplido** — ninguna variable tiene prefijo `NEXT_PUBLIC_`; búsqueda en `.next/static` sin coincidencias |
+| SEG-03 | Autorización en el servidor antes de modificar datos | Derivado orientativo (ENS op.acc.4; NIST AC-6) | Pendiente | **Cumplido** — POST/PUT/DELETE sin sesión devuelven 401; cookie HttpOnly+Secure+SameSite; límite de intentos |
+| SEG-04 | Mínimo privilegio para la cuenta de base de datos | Derivado orientativo (ENS op.acc.4, mp.sw.1; NIST AC-6) | Pendiente | **Cumplido** — `app_riesgos` solo tiene SELECT/INSERT/UPDATE/DELETE; CREATE TABLE y DROP TABLE deniegan |
+| SEG-05 | Validación de entradas en el servidor | Derivado orientativo (NIST SI-10) | Pendiente | **Cumplido** — 26/26 pruebas unitarias pasan; validación por tipo, longitud, lista y escala en `lib/validacion.ts` |
+| SEG-06 | Separación de configuración y datos entre desarrollo, Preview y producción | Derivado orientativo (ENS mp.sw.1) | Pendiente | **Parcial** — variables distintas por entorno en Vercel; Neon sin ramas de Preview (limitación del plan gratuito, documentada en `docs/despliegue.md`) |
+| SEG-07 | Errores sin credenciales ni detalles internos sensibles | Propio del laboratorio | Pendiente | **Cumplido** — `lib/api.ts` devuelve mensajes genéricos; registros sin secretos; HTML escapado por React |
+| SEG-08 | Trazabilidad entre cambios, pruebas y despliegues | Propio del laboratorio | Pendiente | **Parcial** — commits descriptivos y `docs/pruebas.md` completados; `docs/despliegue.md` pendiente de URL Preview |
 
 Evidencias: `docs/pruebas.md`. «Verificado en local» significa probado contra la aplicación y
 una base de datos PostgreSQL local; debe repetirse en Preview para la entrega.

@@ -25,7 +25,7 @@ app/                 páginas y API (Next.js App Router)
   api/riesgos/[id]   PUT, DELETE (con sesión)
   api/login|logout|sesion|resumen
 lib/                 reglas de evaluación, validación, acceso a datos y autenticación
-db/                  schema.sql, permisos.sql (mínimo privilegio), seed.sql (2 riesgos)
+db/                  001_crear_riesgos.sql (migración), roles.sql (cuentas), seed.sql (datos ficticios)
 scripts/             generación de secretos y pruebas de la API
 tests/               pruebas unitarias (Vitest)
 docs/                documentación del laboratorio
@@ -36,9 +36,9 @@ docs/                documentación del laboratorio
 Requisitos: Node.js 20 o superior, npm y una base de datos PostgreSQL 13 o superior.
 
 1. `npm install`
-2. Base de datos, con la **cuenta administradora**:
-   ejecutar `db/schema.sql`, crear el rol `app_riesgos` (ver `db/permisos.sql`), ejecutar
-   `db/permisos.sql` y, opcionalmente, `db/seed.sql`.
+2. Base de datos, con la **cuenta administradora** (`DATABASE_URL_ADMIN`):
+   ejecutar `db/001_crear_riesgos.sql`, después `db/roles.sql` (crea `app_riesgos` con mínimo privilegio)
+   y, opcionalmente, `db/seed.sql`. Ver instrucciones completas en `docs/base-de-datos.md`.
 3. `cp .env.example .env.local` y rellenar (ver `docs/gestion-secretos.md`):
    - `DATABASE_URL`: cadena de `app_riesgos` (desde Bitwarden).
    - `ADMIN_PASSWORD_HASH`: `node scripts/hash-password.mjs`.
@@ -72,9 +72,12 @@ Otros comandos: `npm run build`, `npm test`, `npm run lint`.
 - [Reglas de evaluación](docs/evaluacion-riesgos.md)
 - [Formulación guiada del riesgo](docs/formulacion-riesgo.md)
 - [Riesgos analizados y medida prioritaria](docs/riesgos.md)
+- [Base de datos: modelo, cuentas y migración](docs/base-de-datos.md)
 - [Gestión de secretos](docs/gestion-secretos.md)
 - [Resultados de las pruebas](docs/pruebas.md)
 - [Despliegue](docs/despliegue.md)
+- [Registro del grupo](docs/registro-grupo.md)
+- [Incidencias](docs/incidencias.md)
 - [Decisiones de la IA revisadas](docs/decisiones-ia.md)
 
 La selección de requisitos es una adaptación didáctica y **no acredita conformidad** con el
